@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="mobile-sensor-simulator_codeGen" target="1.8" />
+      <module name="mobile-sensor-simulator_codeGenGrpc" target="1.8" />
+      <module name="mobile-sensor-simulator_codeGenModel" target="1.8" />
+      <module name="sensor-simulator_main" target="1.8" />
+      <module name="sensor-simulator_test" target="1.8" />
+      <module name="sensorsimulator_main" target="1.8" />
+      <module name="sensorsimulator_test" target="1.8" />
+      <module name="simulator_main" target="1.8" />
+      <module name="simulator_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

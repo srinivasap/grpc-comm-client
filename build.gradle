@@ -1,0 +1,98 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        maven { url "http://packages.confluent.io/maven/"}
+        maven { url "https://repo.spring.io/libs-release" }
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE")
+        classpath("com.google.protobuf:protobuf-gradle-plugin:0.8.5")
+        //classpath files('build/classes/java/main')
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+//apply plugin: 'pmd'
+//apply plugin: 'checkstyle'
+//apply plugin: 'findbugs'
+//apply plugin: 'jacoco'
+//apply plugin: 'project-report'
+apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
+apply plugin: 'com.google.protobuf'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
+    compile("org.springframework:spring-core:${springVersion}")
+
+    compile("commons-validator:commons-validator:1.5.1")
+    compile("commons-io:commons-io:${commonsIoVersion}")
+    compile("commons-collections:commons-collections:${commonsCollectionsVersion}")
+    compile("org.apache.httpcomponents:httpclient:${httpcomponentsVersion}")
+    compile("org.projectlombok:lombok:${lombokVersion}")
+
+    compile("com.google.protobuf:protobuf-java:3.5.1")
+    compile("io.grpc:grpc-protobuf:1.12.0")
+    compile("io.grpc:grpc-netty:1.12.0")
+    compile("io.grpc:grpc-stub:1.12.0")
+    compile("io.grpc:grpc-services:1.12.0")
+
+    compile("org.lognet:grpc-spring-boot-starter:2.3.2") {
+        exclude(module: 'grpc-services')
+        exclude(module: 'grpc-netty')
+        exclude(module: 'spring-boot-starter')
+    }
+
+    //testCompile project(':mobile-sensor-simulator')
+    testCompile("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
+    testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    testCompile("junit:junit:4.12")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.5.1'
+}
+
+protobuf {
+    protoc {
+        // The artifact spec for the Protobuf Compiler
+        artifact = 'com.google.protobuf:protoc:3.5.1'
+    }
+    plugins {
+        // Optional: an artifact spec for a protoc plugin, with "grpc" as
+        // the identifier, which can be referred to in the "plugins"
+        // container of the "generateProtoTasks" closure.
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.12.0'
+        }
+    }
+    generateProtoTasks {
+        ofSourceSet('main')*.plugins {
+            // Apply the "grpc" plugin whose spec is defined above, without
+            // options.  Note the braces cannot be omitted, otherwise the
+            // plugin will not be added. This is because of the implicit way
+            // NamedDomainObjectContainer binds the methods.
+            grpc { }
+        }
+    }
+}

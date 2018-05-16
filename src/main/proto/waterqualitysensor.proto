@@ -1,0 +1,125 @@
+//
+// @author Srinivasa Prasad Sunnapu
+//
+
+syntax = "proto3";
+
+//package waterqualitysensor;
+
+option java_multiple_files = true;
+option java_package = "com.mobile.sensor.cloud.waterquality";
+option java_outer_classname = "WaterQualitySensorProto";
+
+// water quality sensor interface
+service WaterQualitySensor {
+
+    // Obtains the sensor details
+    rpc GetWaterSensorDetails(WaterSensorRequest) returns (WaterSensorDetails) {}
+
+    // Request most recent data from the sensor
+    rpc GetWaterSensorData(WaterSensorRequest) returns (WaterSensorData) {}
+
+    // Request stream of sensor data for time range requested - hourly/daily/week/yearly
+    rpc StreamWaterSensorData(WaterSensorRequest) returns (stream WaterSensorData) {}
+
+}
+
+// model representing sensor request
+message WaterSensorRequest {
+    string authToken = 1;
+    // indicating last 10 sec, 5 mins, 1 hrs etc in combination with timeUnit
+    int32 timeSpan = 2;
+    TimeUnit timeUnit = 3;
+
+    enum TimeUnit {
+        LATEST = 0;
+        SECOND = 1;
+        MINUTE = 2;
+        HOUR = 3;
+        DAY = 4;
+        WEEK = 5;
+        MONTH = 6;
+    }
+}
+
+// model repesenting sensor details
+message WaterSensorDetails {
+    string ipaddress = 1;
+    float latitude = 2;
+    float longitue = 3;
+    string provider = 4;
+    Type type = 6;
+    Status status = 5;
+
+    enum Status {
+        INACTIVE = 0;
+        ACTIVE = 1;
+        MAINT = 2;
+    }
+
+    enum Type {
+        WATER = 0;
+        AIR = 1;
+    }
+}
+
+// water quality attributes
+message WaterParameter {
+    Unit unit = 1;
+    Attribute attribute = 2;
+    State state = 3;
+
+    enum Unit {
+        PARTS_PER_MILLION = 0;
+        CUBIC_METER = 1;
+        MILLGRAM_PER_CUBIC_METER = 2;
+        PERCENT = 3;
+    }
+
+    enum Attribute {
+        PH = 0;
+        DO = 1;
+        ORP = 2;
+        CONDUCTIVITY = 3;
+        TURBIDITY = 4;
+        TEMPERATURE = 5;
+        FLUROIDE = 6;
+        CALCIUM = 7;
+        NITRATE = 8;
+        CHLORINE = 9;
+        BROMIDE = 10;
+        SILVER = 11;
+        FLUOROBORATE = 12;
+        AMMONIA = 13;
+        LITHIUM = 14;
+        MEGNESIUM = 15;
+        PERCHLORATE = 16;
+        POTASSIUM = 17;
+        SODIUM = 18;
+    }
+
+    enum State {
+        G = 0;
+        Y = 1;
+        R = 2;
+    }
+}
+
+// model representing sensor data
+message WaterSensorData {
+    WaterSensorDetails sensorDetails = 1;
+    float pressure = 2;
+    float temparature = 3;
+    float tidespeed = 4;
+    // value and parameter type
+    map<string, WaterParameter> parameters = 5;
+    string recordedTime = 6;
+    State state = 7;
+
+    enum State {
+        G = 0;
+        Y = 1;
+        R = 2;
+    }
+}
+

@@ -1,0 +1,4 @@
+pressure,0-50,50-100,100-150
+temperature,0-10,10-20,20-36
+salinity,0-35,35-45,45-55
+conductivity,0-4,4-6,6-10

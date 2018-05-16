@@ -1,0 +1,115 @@
+//
+// @author Srinivasa Prasad Sunnapu
+//
+syntax = "proto3";
+
+//package airqualitysensor;
+
+option java_multiple_files = true;
+option java_package = "com.mobile.sensor.cloud.airquality";
+option java_outer_classname = "AirQualitySensorProto";
+
+// Air quality sensor interface
+service AirQualitySensor {
+
+    // Obtains the sensor details
+    rpc GetAirSensorDetails(AirSensorRequest) returns (AirSensorDetails) {}
+
+    // Request most recent data from the sensor
+    rpc GetAirSensorData(AirSensorRequest) returns (AirSensorData) {}
+
+    // Request stream of sensor data for time range requested - hourly/daily/week/yearly
+    rpc StreamAirSensorData(AirSensorRequest) returns (stream AirSensorData) {}
+
+}
+
+// model representing sensor request
+message AirSensorRequest {
+    string authToken = 1;
+    // indicating last 10 sec, 5 mins, 1 hrs etc in combination with timeUnit
+    int32 timeSpan = 2;
+    TimeUnit timeUnit = 3;
+
+    enum TimeUnit {
+        LATEST = 0;
+        SECOND = 1;
+        MINUTE = 2;
+        HOUR = 3;
+        DAY = 4;
+        WEEK = 5;
+        MONTH = 6;
+    }
+}
+
+// model repesenting sensor details
+message AirSensorDetails {
+    string ipaddress = 1;
+    float latitude = 2;
+    float longitue = 3;
+    string provider = 4;
+    Type type = 6;
+    Status status = 5;
+
+    enum Status {
+        INACTIVE = 0;
+        ACTIVE = 1;
+        MAINT = 2;
+    }
+
+    enum Type {
+        WATER = 0;
+        AIR = 1;
+    }
+}
+
+// air quality attributes
+message AirParameter {
+    Unit unit = 1;
+    Attribute attribute = 2;
+    State state = 3;
+
+    enum Unit {
+        PARTS_PER_MILLION = 0;
+        CUBIC_METER = 1;
+        MILLGRAM_PER_CUBIC_METER = 2;
+        PERCENT = 3;
+    }
+
+    enum Attribute {
+        OZONE = 0;
+        CARBON_DIOXIDE = 1;
+        CARBON_MONOXIDE = 2;
+        SULPHURIC_ACID = 3;
+        NITROGEN_OXIDE = 4;
+        NITROGEN_DIOXIDE = 5;
+        METHANE = 6;
+        VOC = 7;
+        IRON = 8;
+        SULPHER = 9;
+    }
+
+    enum State {
+        G = 0;
+        Y = 1;
+        R = 2;
+    }
+}
+
+// model representing sensor data
+message AirSensorData {
+    AirSensorDetails sensorDetails = 1;
+    float pressure = 2;
+    float temparature = 3;
+    float windspeed = 4;
+    // value and parameter type
+    map<string, AirParameter> parameters = 5;
+    string recordedTime = 6;
+    State state = 7;
+
+    enum State {
+        G = 0;
+        Y = 1;
+        R = 2;
+    }
+}
+
